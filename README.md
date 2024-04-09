@@ -51,11 +51,10 @@ classDiagram
         - String name
         - LocalDate birthDate
         - List~Address~ adresses
-        + Address getMainAddress()
+        + Optional~Address~ getMainAddress()
     }
 
     class Address {
-        <<Embedded>>
         - String publicPlace
         - Integer number
         - String city
@@ -72,43 +71,10 @@ classDiagram
         MAILING("Correspondência")
     }
 
-    class State {
-        <<Enumeration>>
-        AC("Acre")
-        AL("Alagoas")
-        AP("Amapá")
-        AM("Amazonas")
-        BA("Bahia")
-        CE("Ceará")
-        DF("Distrito Federal")
-        ES("Espírito Santo")
-        GO("Goiás")
-        MA("Maranhão")
-        MT("Mato Grosso")
-        MS("Mato Grosso do Sul")
-        MG("Minas Gerais")
-        PA("Pará")
-        PB("Paraíba")
-        PR("Paraná")
-        PE("Pernambuco")
-        PI("Piauí")
-        RJ("Rio de Janeiro")
-        RN("Rio Grande do Norte")
-        RS("Rio Grande do Sul")
-        RO("Rondônia")
-        RR("Roraima")
-        SC("Santa Catarina")
-        SP("São Paulo")
-        SE("Sergipe")
-        TO("Tocantins")
-        EX("Exterior")
-    }
-
     BasicEntity <-- Person
     BasicEntity <-- Address
-    Person "1" *-- "1..n" Address
+    Person "1" *-- "0..n" Address
     Address --> AddressType
-    Address --> State
 ``` 
 
 ---
@@ -129,7 +95,7 @@ classDiagram
 Antes de mais nada, é preciso Possuir no mínimo JDK 21 LTS instalado na máquina em que irá executar.
 A execução do projeto pode ser feita utilizando recurso de sua IDE ou com os comandos abaixo:
 
-Executando com perfil DEV
+### Executando com perfil DEV
 
 ```bash
 ./mvnw spring-boot:run -Dspring_profiles_active=dev

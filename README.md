@@ -42,8 +42,12 @@ Diagrama de classes com sintaxe [Mermaid].
 
 ```mermaid
 classDiagram
-    class People {
-        - Long id
+    class BasicEntity {
+        <<Abstract>>
+        - String id
+    }
+
+    class Person {
         - String name
         - LocalDate birthDate
         - List~Address~ adresses
@@ -100,7 +104,9 @@ classDiagram
         EX("Exterior")
     }
 
-    People "1" *-- "1..n" Address
+    BasicEntity <-- Person
+    BasicEntity <-- Address
+    Person "1" *-- "1..n" Address
     Address --> AddressType
     Address --> State
 ``` 

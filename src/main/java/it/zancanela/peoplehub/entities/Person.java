@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Entity
@@ -21,6 +22,9 @@ public class Person extends BasicEntity {
     private List<Address> adresses;
 
     public Optional<Address> getMainAddress() {
+        if (Objects.isNull(getAdresses()))
+            return Optional.empty();
+
         return getAdresses().stream()
                 .filter(Address::isMain)
                 .findFirst();

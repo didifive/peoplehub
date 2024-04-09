@@ -132,7 +132,7 @@ A execução do projeto pode ser feita utilizando recurso de sua IDE ou com os c
 Executando com perfil DEV
 
 ```bash
-./mvnw spring-boot:run -Drun.arguments=--spring_profiles_active=dev
+./mvnw spring-boot:run -Dspring_profiles_active=dev
 ```
 
 ### OpenApi / Swagger

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @DisplayName("Address Service Tests")
 @ActiveProfiles("test")
 class AddressServiceImplTest extends AddressServiceTest {

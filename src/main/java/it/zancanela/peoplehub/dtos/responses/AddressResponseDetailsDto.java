@@ -6,13 +6,13 @@ import it.zancanela.peoplehub.entities.Address;
 import it.zancanela.peoplehub.enums.AddressType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.*;
-
-import java.util.List;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 
 import static it.zancanela.peoplehub.utils.ValidationMessagesAndOpenApiConstantsUtils.*;
 
-public record AddressResponseDto(
+public record AddressResponseDetailsDto(
         @Schema(example = UUID_ID_EXAMPLE)
         String id,
         @Schema(example = ADDRESS_PUBLIC_PLACE_EXAMPLE)
@@ -32,11 +32,12 @@ public record AddressResponseDto(
         @Enumerated(EnumType.STRING)
         AddressType addressType,
         @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-        boolean isMain
+        boolean isMain,
+        String personId
 ) {
 
-    public static synchronized AddressResponseDto toDto(Address entity) {
-        return new AddressResponseDto(
+    public static synchronized AddressResponseDetailsDto toDto(Address entity) {
+        return new AddressResponseDetailsDto(
                 entity.getId(),
                 entity.getPublicPlace(),
                 entity.getNumber(),
@@ -44,12 +45,9 @@ public record AddressResponseDto(
                 entity.getState(),
                 entity.getZipCode(),
                 entity.getAddressType(),
-                entity.isMain()
+                entity.isMain(),
+                entity.getPerson().getId()
         );
-    }
-
-    public static synchronized List<AddressResponseDto> toDto(List<Address> adresses) {
-        return adresses.stream().map(AddressResponseDto::toDto).toList();
     }
 
 }

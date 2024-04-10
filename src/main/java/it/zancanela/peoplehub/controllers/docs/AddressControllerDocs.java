@@ -7,10 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.zancanela.peoplehub.dtos.ApiErrorDTO;
-import it.zancanela.peoplehub.dtos.requests.PersonNameRequestDto;
-import it.zancanela.peoplehub.dtos.requests.PersonRequestDto;
-import it.zancanela.peoplehub.dtos.requests.PersonRequestListDto;
+import it.zancanela.peoplehub.dtos.requests.*;
+import it.zancanela.peoplehub.dtos.responses.AddressResponseDetailsDto;
+import it.zancanela.peoplehub.dtos.responses.AddressResponseDto;
 import it.zancanela.peoplehub.dtos.responses.PersonResponseDto;
+import it.zancanela.peoplehub.entities.Address;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,64 +21,39 @@ import java.util.List;
 
 import static it.zancanela.peoplehub.utils.ValidationMessagesAndOpenApiConstantsUtils.*;
 
-@Tag(name = "Person Endpoints")
-public interface PersonControllerDocs {
+@Tag(name = "Address Endpoints")
+public interface AddressControllerDocs {
 
     @ApiResponse(responseCode = "201"
             , description = CREATE_201_DESCRIPTION)
     @ApiResponse(responseCode = "400"
             , description = CREATE_400_DESCRIPTION
             , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
-    ResponseEntity<PersonResponseDto> create(PersonRequestDto dto,
-                                             BindingResult bindingResult);
+    @ApiResponse(responseCode = "404"
+            , description = FIND_BY_ID_404_DESCRIPTION
+            , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
+    ResponseEntity<Void> addAddress(String personId,
+                                                  AddressRequestDto dto,
+                                                  BindingResult bindingResult);
 
     @ApiResponse(responseCode = "201"
             , description = CREATE_201_DESCRIPTION)
     @ApiResponse(responseCode = "400"
             , description = CREATE_400_DESCRIPTION
             , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
-    ResponseEntity<List<PersonResponseDto>> createBatch(PersonRequestListDto dtos,
+    @ApiResponse(responseCode = "404"
+            , description = FIND_BY_ID_404_DESCRIPTION
+            , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
+    ResponseEntity<Void> addAdresses(String personId,
+                                                        AddressRequestListDto dtos,
                                                         BindingResult bindingResult);
 
-    @Parameter(in = ParameterIn.QUERY
-            , schema = @Schema(type = INTEGER)
-            , name = "size"
-            , description = PAGEABLE_PARAMETER_SIZE_DESCRIPTION
-            , example = PAGEABLE_PARAMETER_SIZE_EXAMPLE)
-    @Parameter(in = ParameterIn.QUERY
-            , schema = @Schema(type = INTEGER)
-            , name = "page"
-            , description = PAGEABLE_PARAMETER_PAGE_DESCRIPTION
-            , example = PAGEABLE_PARAMETER_PAGE_EXAMPLE)
-    @Parameter(in = ParameterIn.QUERY
-            , schema = @Schema(type = STRING)
-            , name = "sort"
-            , description = PAGEABLE_SORT_DESCRIPTION
-            , example = PAGEABLE_SORT_EXAMPLE)
     @ApiResponse(responseCode = "200"
             , description = FIND_ALL_200_DESCRIPTION)
-    ResponseEntity<Page<PersonResponseDto>> findAll(@Parameter(hidden = true) Pageable pageable);
-
-    @Parameter(in = ParameterIn.QUERY
-            , schema = @Schema(type = INTEGER)
-            , name = "size"
-            , description = PAGEABLE_PARAMETER_SIZE_DESCRIPTION
-            , example = PAGEABLE_PARAMETER_SIZE_EXAMPLE)
-    @Parameter(in = ParameterIn.QUERY
-            , schema = @Schema(type = INTEGER)
-            , name = "page"
-            , description = PAGEABLE_PARAMETER_PAGE_DESCRIPTION
-            , example = PAGEABLE_PARAMETER_PAGE_EXAMPLE)
-    @Parameter(in = ParameterIn.QUERY
-            , schema = @Schema(type = STRING)
-            , name = "sort"
-            , description = PAGEABLE_SORT_DESCRIPTION
-            , example = PAGEABLE_SORT_EXAMPLE)
-    @ApiResponse(responseCode = "200"
-            , description = FIND_ALL_200_DESCRIPTION)
-    ResponseEntity<Page<PersonResponseDto>> findAllByName(PersonNameRequestDto dto,
-                                                          BindingResult bindingResult,
-                                                          @Parameter(hidden = true) Pageable pageable);
+    @ApiResponse(responseCode = "404"
+            , description = FIND_BY_ID_404_DESCRIPTION
+            , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
+    ResponseEntity<List<AddressResponseDto>> findAllByPerson(String personId);
 
     @Parameter(in = ParameterIn.PATH
             , schema = @Schema(type = STRING)
@@ -89,7 +65,7 @@ public interface PersonControllerDocs {
     @ApiResponse(responseCode = "404"
             , description = FIND_BY_ID_404_DESCRIPTION
             , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
-    ResponseEntity<PersonResponseDto> findById(String id);
+    ResponseEntity<AddressResponseDetailsDto> findById(String id);
 
     @Parameter(in = ParameterIn.PATH
             , schema = @Schema(type = STRING)
@@ -104,8 +80,8 @@ public interface PersonControllerDocs {
     @ApiResponse(responseCode = "400"
             , description = CREATE_400_DESCRIPTION
             , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
-    ResponseEntity<PersonResponseDto> update(String id,
-                                             PersonRequestDto dto,
+    ResponseEntity<AddressResponseDetailsDto> update(String id,
+                                             AddressRequestDto dto,
                                              BindingResult bindingResult);
 
 }

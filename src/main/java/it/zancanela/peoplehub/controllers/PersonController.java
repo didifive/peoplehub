@@ -68,7 +68,7 @@ public class PersonController implements PersonControllerDocs {
                 PersonResponseDto.toDto(personService.findAll(pageable)));
     }
 
-    @GetMapping
+    @GetMapping("/find-by-name")
     public ResponseEntity<Page<PersonResponseDto>> findAllByName(
             @RequestBody @Valid PersonNameRequestDto dto,
             BindingResult bindingResult,

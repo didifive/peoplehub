@@ -14,16 +14,16 @@ public class Address extends BasicEntity {
     private Integer number;
     @Column(name = "CITY")
     private String city;
-    @Column(name = "STATE")
+    @Column(name = "STATE", length = 2)
     private String state;
-    @Column(name = "ZIP_CODE", length = 8)
+    @Column(name = "ZIP_CODE", length = 9)
     private String zipCode;
     @Enumerated(EnumType.STRING)
     @Column(name = "ADDRESS_TYPE")
     private AddressType addressType;
     @Column(name = "MAIN")
     private boolean main;
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "PERSON_ID")
     Person person;
 

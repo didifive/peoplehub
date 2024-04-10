@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import static it.zancanela.peoplehub.utils.Assertions.assertThrowsExceptionWithCorrectMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Transactional
 public abstract class PersonServiceTest {
 
     private Person person;

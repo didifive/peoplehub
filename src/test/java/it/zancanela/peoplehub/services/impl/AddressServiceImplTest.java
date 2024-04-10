@@ -1,41 +1,50 @@
 package it.zancanela.peoplehub.services.impl;
 
-import it.zancanela.peoplehub.PeopleHubApplication;
+import it.zancanela.peoplehub.repositories.AddressRepository;
 import it.zancanela.peoplehub.repositories.PersonRepository;
+import it.zancanela.peoplehub.services.AddressService;
+import it.zancanela.peoplehub.services.AddressServiceTest;
 import it.zancanela.peoplehub.services.PersonService;
-import it.zancanela.peoplehub.services.PersonServiceTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Person Service Tests")
+@DisplayName("Address Service Tests")
 @ActiveProfiles("test")
-class PersonServiceImplTest extends PersonServiceTest {
+class AddressServiceImplTest extends AddressServiceTest {
 
     @Inject
-    private PersonServiceImpl service;
+    private AddressServiceImpl service;
 
     @Inject
-    private PersonRepository repository;
+    private PersonServiceImpl personService;
 
-    @Override
-    public PersonService service() {
-        return service;
-    }
+    @Inject
+    private AddressRepository repository;
 
     @BeforeEach
     @Transactional
     void tearDown() {
         repository.deleteAll();
+    }
+
+    @Override
+    public AddressService service() {
+        return service;
+    }
+
+    @Override
+    public PersonService personService() {
+        return personService;
     }
 }

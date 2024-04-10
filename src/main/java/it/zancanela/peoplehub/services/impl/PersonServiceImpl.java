@@ -41,12 +41,13 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @Transactional
     public Person update(String id, Person person) {
         Person existingPerson = this.findById(id);
 
         existingPerson.setName(person.getName());
         existingPerson.setBirthDate(person.getBirthDate());
 
-        return save(existingPerson);
+        return this.save(existingPerson);
     }
 }

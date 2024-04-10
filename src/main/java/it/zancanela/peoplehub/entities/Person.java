@@ -17,6 +17,7 @@ public class Person extends BasicEntity {
     private LocalDate birthDate;
 
     @OneToMany(mappedBy = "person"
+            , fetch = FetchType.EAGER
             , cascade = {CascadeType.ALL}
             , orphanRemoval = true)
     private List<Address> adresses;

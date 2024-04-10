@@ -52,4 +52,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 
     }
 
+    @ExceptionHandler( { DataIntegrityViolationException.class } )
+    public ResponseEntity<ApiErrorDTO> handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request){
+
+        ApiErrorDTO err = new ApiErrorDTO();
+        err.setTimestamp(Instant.now());
+        err.setStatus(HttpStatus.CONFLICT.value());
+        err.setError("Data Integrity Violation");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(err.getStatus()).body(err);
+
+    }
+
 }

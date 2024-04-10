@@ -3,9 +3,10 @@ package it.zancanela.peoplehub.dtos.responses;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import it.zancanela.peoplehub.entities.Address;
 import it.zancanela.peoplehub.entities.Person;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,8 +40,12 @@ public record PersonResponseDto(
         );
     }
 
-    public static synchronized Page<PersonResponseDto> toDto(Page<Person> people) {
-        return people.map(PersonResponseDto::toDto);
+    public static synchronized Page<PersonResponseDto> toDto(Page<Person> page, Pageable pageable) {
+        List<PersonResponseDto> dtos = page.getContent().stream()
+                .map(PersonResponseDto::toDto)
+                .toList();
+
+        return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
 
 }

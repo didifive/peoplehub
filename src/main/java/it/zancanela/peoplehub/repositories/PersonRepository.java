@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, String> {
+    Page<Person> findAll(Pageable pageable);
     Page<Person> findAllByNameContains(String nome, Pageable pageable);
 }

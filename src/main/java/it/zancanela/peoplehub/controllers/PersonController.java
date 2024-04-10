@@ -65,8 +65,10 @@ public class PersonController implements PersonControllerDocs {
     public ResponseEntity<Page<PersonResponseDto>> findAll(
             @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable
     ) {
+        Page<PersonResponseDto> page = PersonResponseDto.toDto(personService.findAll(pageable), pageable);
+
         return ResponseEntity
-                .ok(PersonResponseDto.toDto(personService.findAll(pageable)));
+                .ok(page);
     }
 
     @GetMapping("/find-by-name")
@@ -78,7 +80,7 @@ public class PersonController implements PersonControllerDocs {
         verifyBindingResult(bindingResult);
 
         return ResponseEntity.ok(
-                PersonResponseDto.toDto(personService.findAll(dto.name(), pageable)));
+                PersonResponseDto.toDto(personService.findAll(dto.name(), pageable),pageable));
     }
 
     @GetMapping("/{id}")

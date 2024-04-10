@@ -18,7 +18,10 @@
 		<flyway.version>10.11.0</flyway.version>
 		<springdoc-openapi.version>2.4.0</springdoc-openapi.version>
 		<postgresql.version>42.7.3</postgresql.version>
+		<hamcrest.version>2.2</hamcrest.version>
 		<jacoco.version>0.8.11</jacoco.version>
+		<powermock.version>2.0.9</powermock.version>
+		<exec.mainClass>it.zancanela.peoplehub.PeopleHubApplication</exec.mainClass>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -61,9 +64,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<version>${hamcrest.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
 			<version>${jacoco.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito2</artifactId>
+			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -73,6 +88,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>${exec.mainClass}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>

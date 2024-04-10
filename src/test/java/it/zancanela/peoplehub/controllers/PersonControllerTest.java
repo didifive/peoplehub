@@ -7,6 +7,7 @@ import it.zancanela.peoplehub.entities.Person;
 import it.zancanela.peoplehub.exceptions.EntityNotFoundException;
 import it.zancanela.peoplehub.exceptions.RestExceptionHandler;
 import it.zancanela.peoplehub.services.PersonService;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,6 +32,7 @@ import java.util.*;
 
 import static it.zancanela.peoplehub.utils.JsonConvertionUtils.asJsonString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.anything;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -90,6 +93,29 @@ class PersonControllerTest {
     }
 
     @Test
+    void createThrowsExceptionWhenBirthDateIsInvalid() throws Exception {
+        String invalidDate = "82-04-03";
+
+        PersonRequestDto personRequestDtoWithInvalidBirthDate = new PersonRequestDto(
+                "Luis Zancanela",
+                invalidDate
+        );
+
+        mockMvc.perform(post(PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(personRequestDtoWithInvalidBirthDate)))
+                .andExpectAll(status().isInternalServerError()
+                        , jsonPath("$.path", is(PATH))
+                        , jsonPath("$.error", is("Erro no sistema :("))
+                        , jsonPath("$.status", is(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                        , jsonPath("$.timestamp", anything())
+                        , jsonPath("$.message", is("The date entered [" +
+                                invalidDate +
+                                "] cannot be converted"))
+                );
+    }
+
+    @Test
     void createBatch() throws Exception {
         when(service.save(anyList())).thenReturn(List.of(person));
 
@@ -103,44 +129,46 @@ class PersonControllerTest {
                 );
     }
 
-//    @Test
-//    void findAll() throws Exception {
-//        Page<Person> page = new PageImpl<>(Collections.singletonList(person));
-//
-//        when(service.findAll(any(Pageable.class))).thenReturn(page);
-//
-//                mockMvc.perform(get(PATH))
-//                .andExpectAll(
-//                        status().isOk()
-//                        , jsonPath("$.content.[0].name", is(personRequestDto.name()))
-//                        , jsonPath("$.content.[0].birthDate", is(personRequestDto.birthDate()))
-//                        , jsonPath("$.size", is(10))
-//                        , jsonPath("$.totalElements", is(1))
-//                );
-//    }
+    @Test
+    void findAll() throws Exception {
+        Page<Person> page = new PageImpl<>(Collections.singletonList(person));
 
-//    @Test
-//    void findAllByName() throws Exception {
-//        mockMvc.perform(post(PATH)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(asJsonString(personRequestDto)));
-//
-//        PersonNameRequestDto personNameRequestDto = new PersonNameRequestDto(personRequestDto.name());
-//
-//        mockMvc.perform(get(PATH + "/find-by-name")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(asJsonString(personNameRequestDto)))
-//                .andExpectAll(
-//                        status().isOk()
-//                        , jsonPath("$.content.[0].name", is(personRequestDto.name()))
-//                        , jsonPath("$.content.[0].birthDate", is(personRequestDto.birthDate()))
-//                        , jsonPath("$.size", is(10))
-//                        , jsonPath("$.totalElements", is(1))
-//                );
-//    }
-//
+        when(service.findAll(any(Pageable.class))).thenReturn(page);
+
+                mockMvc.perform(get(PATH))
+                .andExpectAll(
+                        status().isOk()
+                        , jsonPath("$.content.[0].name", is(personRequestDto.name()))
+                        , jsonPath("$.content.[0].birthDate", is(personRequestDto.birthDate()))
+                        , jsonPath("$.size", is(10))
+                        , jsonPath("$.totalElements", is(1))
+                );
+    }
+
+    @Test
+    void findAllByName() throws Exception {
+        PersonNameRequestDto personNameRequestDto = new PersonNameRequestDto(personRequestDto.name());
+
+        Page<Person> page = new PageImpl<>(Collections.singletonList(person));
+
+        when(service.findAll(eq(personNameRequestDto.name()),any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get(PATH + "/find-by-name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(personNameRequestDto)))
+                .andExpectAll(
+                        status().isOk()
+                        , jsonPath("$.content.[0].name", is(personRequestDto.name()))
+                        , jsonPath("$.content.[0].birthDate", is(personRequestDto.birthDate()))
+                        , jsonPath("$.size", is(10))
+                        , jsonPath("$.totalElements", is(1))
+                );
+    }
+
     @Test
     void findById() throws Exception {
+        person.setAdresses(new ArrayList<>());
+
         when(service.findById(person.getId())).thenReturn(person);
 
         mockMvc.perform(get(PATH+"/"+person.getId()))
@@ -184,8 +212,22 @@ class PersonControllerTest {
 
     @Test
     void updateThrowExceptionWhenBodyIsInvalid() throws Exception {
-        mockMvc.perform(put(PATH+"/"+person.getId()))
-                .andExpect(status().isBadRequest());
+        String invalidBody = "{\n" +
+                "  \"name\": \"Luis\"\n" +
+                "}";
+
+        mockMvc.perform(put(PATH+"/"+person.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidBody))
+                .andExpectAll(
+                        status().isBadRequest()
+                        , jsonPath("$.path", is(PATH+"/"+person.getId()))
+                        , jsonPath("$.error", is("Bad Request Body"))
+                        , jsonPath("$.status", is(HttpStatus.BAD_REQUEST.value()))
+                        , jsonPath("$.timestamp", anything())
+                        , jsonPath("$.message", is("field:[birthDate] message:[Not be null, empty or blank]"))
+
+                );
     }
 
     @Test

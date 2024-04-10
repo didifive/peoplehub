@@ -13,9 +13,6 @@ public abstract class BasicEntity {
     private String id;
 
     protected BasicEntity() {}
-    protected BasicEntity(String id) {
-        this.id = id;
-    }
 
     public String getId() {
         return id;

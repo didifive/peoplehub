@@ -10,7 +10,9 @@ import it.zancanela.peoplehub.services.PersonService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -41,7 +43,12 @@ public class AddressServiceImpl implements AddressService {
                 })
                 .toList();
 
-        person.setAdresses(repository.saveAll(adresses));
+        if (Objects.isNull(person.getAdresses()))
+            person.setAdresses(new ArrayList<>());
+
+        List<Address> existingAdress = person.getAdresses();
+        existingAdress.addAll(repository.saveAll(adresses));
+        person.setAdresses(existingAdress);
 
         personService.save(person);
     }
@@ -79,29 +86,22 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
-    public void setMainAddress(String personId, String addressId) {
-        List<Address> adresses = this.findAllByPerson(personId);
+    public void setMainAddress(String id) {
+        Address address = this.findById(id);
 
-        boolean personHasNoProvidedAddress =
-                adresses.stream()
-                        .filter(address -> address.getId().equals(addressId))
-                        .toList()
-                        .isEmpty();
-        if (adresses.isEmpty() || personHasNoProvidedAddress)
-            throw new DataIntegrityViolationException(
-                    "Person with id [" +
-                            personId +
-                            "] does not have the address with id [" +
-                            addressId +
-                            "] linked"
-            );
+        if (Objects.isNull(address.getPerson()))
+            throw new DataIntegrityViolationException("The address with id [" +
+                    address.getId() +
+                    "] does not have a linked person");
+
+        List<Address> adresses = this.findAllByPerson(address.getPerson().getId());
 
         repository.saveAll(adresses.stream().map(
-                        address -> {
-                            address.setMain(false);
-                            if (address.getId().equals(addressId))
-                                address.setMain(true);
-                            return address;
+                        a -> {
+                            a.setMain(false);
+                            if (a.getId().equals(id))
+                                a.setMain(true);
+                            return a;
                         })
                 .toList());
     }

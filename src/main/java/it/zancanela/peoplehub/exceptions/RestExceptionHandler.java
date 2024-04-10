@@ -6,25 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Instant;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler{
-
-    @ExceptionHandler( { PeopleHubException.class } )
-    public ResponseEntity<ApiErrorDTO> handleLojaException(PeopleHubException e, HttpServletRequest request){
-
-        ApiErrorDTO err = new ApiErrorDTO();
-        err.setTimestamp(Instant.now());
-        err.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        err.setError("Erro no sistema :(");
-        err.setMessage(e.getMessage());
-        err.setPath(request.getRequestURI());
-        return ResponseEntity.status(err.getStatus()).body(err);
-
-    }
 
     @ExceptionHandler( { EntityNotFoundException.class } )
     public ResponseEntity<ApiErrorDTO> handleEntityNotFoundException(EntityNotFoundException e, HttpServletRequest request){
@@ -39,7 +27,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 
     }
 
-    @ExceptionHandler( { BadRequestBodyException.class } )
+    @ExceptionHandler( { BadRequestBodyException.class, HttpClientErrorException.BadRequest.class } )
     public ResponseEntity<ApiErrorDTO> handleBadRequestBodyException(BadRequestBodyException e, HttpServletRequest request){
 
         ApiErrorDTO err = new ApiErrorDTO();
@@ -59,6 +47,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler{
         err.setTimestamp(Instant.now());
         err.setStatus(HttpStatus.CONFLICT.value());
         err.setError("Data Integrity Violation");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(err.getStatus()).body(err);
+
+    }
+
+    @ExceptionHandler( { PeopleHubException.class, RuntimeException.class } )
+    public ResponseEntity<ApiErrorDTO> handlePeopleHubException(PeopleHubException e, HttpServletRequest request){
+
+        ApiErrorDTO err = new ApiErrorDTO();
+        err.setTimestamp(Instant.now());
+        err.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        err.setError("Erro no sistema :(");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(err.getStatus()).body(err);

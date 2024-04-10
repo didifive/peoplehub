@@ -23,6 +23,7 @@ public abstract class AddressServiceTest {
 
     private Person person;
     private Address address;
+    private Address address2;
     private List<Address> adresses;
 
     public abstract AddressService service();
@@ -59,7 +60,37 @@ public abstract class AddressServiceTest {
         address.setZipCode("01214-489");
         address.setAddressType(AddressType.HOME);
 
-        adresses = new ArrayList<>(Collections.singletonList(address));
+        address2 = new Address();
+        address2.setPublicPlace("Rua 09");
+        address2.setNumber(5897);
+        address2.setCity("Niterói");
+        address2.setState("RJ");
+        address2.setZipCode("25784-489");
+        address2.setAddressType(AddressType.COMMERCIAL);
+
+        adresses = new ArrayList<>(Arrays.asList(address,address2));
+    }
+
+    @Test
+    @Transactional
+    void addAddressWhenPersonHasNoAddress() {
+        service().addAddress(person.getId(), address);
+
+        Person updatedPerson = personService().findById(person.getId());
+
+        assertEquals(1, updatedPerson.getAdresses().size());
+    }
+
+    @Test
+    @Transactional
+    void addAddressWhenPersonHasAddress() {
+        service().addAddress(person.getId(), address);
+
+        service().addAddress(person.getId(), address2);
+
+        Person updatedPerson = personService().findById(person.getId());
+
+        assertEquals(2, updatedPerson.getAdresses().size());
     }
 
     @Test
@@ -69,17 +100,7 @@ public abstract class AddressServiceTest {
 
         Person updatedPerson = personService().findById(person.getId());
 
-        assertEquals(1, updatedPerson.getAdresses().size());
-    }
-
-    @Test
-    @Transactional
-    void addAddress() {
-        service().addAddress(person.getId(), address);
-
-        Person updatedPerson = personService().findById(person.getId());
-
-        assertEquals(1, updatedPerson.getAdresses().size());
+        assertEquals(2, updatedPerson.getAdresses().size());
     }
 
     @Test
@@ -91,6 +112,21 @@ public abstract class AddressServiceTest {
         var result = service().findById(id);
 
         assertAddress(address, result);
+    }
+
+    @Test
+    @Transactional
+    void findByIdWithInvalidIdShoulThrowException() {
+        String invalidId = UUID.randomUUID().toString();
+
+        assertThrowsExceptionWithCorrectMessage(
+                () -> service().findById(invalidId),
+                EntityNotFoundException.class,
+                "Address with id [" +
+                        invalidId +
+                        "] not found"
+        );
+
     }
 
     @Test
@@ -109,12 +145,12 @@ public abstract class AddressServiceTest {
         String id = person.getAdresses().getFirst().getId();
 
         Address updateAddress = new Address();
-        address.setPublicPlace("Rua 09");
-        address.setNumber(5897);
-        address.setCity("Niterói");
-        address.setState("RJ");
-        address.setZipCode("05784-489");
-        address.setAddressType(AddressType.COMMERCIAL);
+        updateAddress.setPublicPlace("Rua 09");
+        updateAddress.setNumber(5897);
+        updateAddress.setCity("Niterói");
+        updateAddress.setState("RJ");
+        updateAddress.setZipCode("05784-489");
+        updateAddress.setAddressType(AddressType.COMMERCIAL);
 
         var result = service().update(id, updateAddress);
 
@@ -128,43 +164,40 @@ public abstract class AddressServiceTest {
         service().addAddress(personId,address);
         String addressId = person.getAdresses().getFirst().getId();
 
-        service().setMainAddress(personId, addressId);
+        service().setMainAddress(addressId);
 
         assertTrue(person.getAdresses().getFirst().isMain());
     }
 
     @Test
     @Transactional
-    void setMainAddressThrowsExceptionWhenPersonHasNoAddress() {
+    void setMainAddressWhenPersonHasTwoAddress() {
         String personId = person.getId();
-        String addressId = UUID.randomUUID().toString();
+        service().addAdresses(personId,adresses);
+        String addressId = person.getAdresses().getFirst().getId();
 
-        assertThrowsExceptionWithCorrectMessage(
-                () -> service().setMainAddress(personId, addressId),
-                DataIntegrityViolationException.class,
-                "Person with id [" +
-                        personId +
-                        "] does not have the address with id [" +
-                        addressId +
-                        "] linked"
-        );
+        service().setMainAddress(addressId);
+
+        assertEquals(2, person.getAdresses().size());
+        assertTrue(person.getAdresses().getFirst().isMain());
+        assertFalse(person.getAdresses().getLast().isMain());
     }
 
     @Test
     @Transactional
-    void setMainAddressThrowsExceptionWhenPersonHasNoProvidedAddress() {
+    void setMainAddressThrowsExceptionWhenAddressNoHasLinkedPerson() {
         String personId = person.getId();
-        service().addAddress(personId,address);
-        String invalidAddressId = UUID.randomUUID().toString();
+        service().addAdresses(personId,adresses);
+        Address addressWithoutPerson = person.getAdresses().getFirst();
+        addressWithoutPerson.setPerson(null);
+
 
         assertThrowsExceptionWithCorrectMessage(
-                () -> service().setMainAddress(personId, invalidAddressId),
+                () -> service().setMainAddress(addressWithoutPerson.getId()),
                 DataIntegrityViolationException.class,
-                "Person with id [" +
-                        personId +
-                        "] does not have the address with id [" +
-                        invalidAddressId +
-                        "] linked"
+                "The address with id [" +
+                        address.getId() +
+                        "] does not have a linked person"
         );
     }
 }

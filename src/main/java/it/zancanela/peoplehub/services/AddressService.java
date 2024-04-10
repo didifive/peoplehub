@@ -17,6 +17,6 @@ public interface AddressService {
 
     Address update(String id, Address address);
 
-    void setMainAddress(String personId, String addressId);
+    void setMainAddress(String id);
 
 }

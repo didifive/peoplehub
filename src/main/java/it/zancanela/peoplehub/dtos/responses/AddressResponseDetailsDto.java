@@ -4,11 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import it.zancanela.peoplehub.entities.Address;
 import it.zancanela.peoplehub.enums.AddressType;
+import it.zancanela.peoplehub.exceptions.DataIntegrityViolationException;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+
+import java.util.Objects;
 
 import static it.zancanela.peoplehub.utils.ValidationMessagesAndOpenApiConstantsUtils.*;
 
@@ -37,6 +40,11 @@ public record AddressResponseDetailsDto(
 ) {
 
     public static synchronized AddressResponseDetailsDto toDto(Address entity) {
+        if(Objects.isNull(entity.getPerson()))
+            throw new DataIntegrityViolationException("The address with id [" +
+                    entity.getId() +
+                    "] does not have a linked person");
+
         return new AddressResponseDetailsDto(
                 entity.getId(),
                 entity.getPublicPlace(),

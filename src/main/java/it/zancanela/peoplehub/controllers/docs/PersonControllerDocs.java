@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.zancanela.peoplehub.dtos.ApiErrorDTO;
 import it.zancanela.peoplehub.dtos.requests.PersonNameRequestDto;
 import it.zancanela.peoplehub.dtos.requests.PersonRequestDto;
+import it.zancanela.peoplehub.dtos.requests.PersonRequestListDto;
 import it.zancanela.peoplehub.dtos.responses.PersonResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +42,7 @@ public interface PersonControllerDocs {
     @ApiResponse(responseCode = "409"
             , description = CREATE_409_DESCRIPTION
             , content = @Content(schema = @Schema(implementation = ApiErrorDTO.class)))
-    ResponseEntity<List<PersonResponseDto>> createBatch(List<PersonRequestDto> dtos,
+    ResponseEntity<List<PersonResponseDto>> createBatch(PersonRequestListDto dtos,
                                                         BindingResult bindingResult);
 
     @Parameter(in = ParameterIn.QUERY

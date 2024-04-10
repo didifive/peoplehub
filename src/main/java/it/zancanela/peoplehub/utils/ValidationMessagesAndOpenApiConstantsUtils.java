@@ -7,6 +7,7 @@ public class ValidationMessagesAndOpenApiConstantsUtils {
     }
 
     public static final String NOT_BE_NULL_EMPTY_OR_BLANK = "Not be null, empty or blank";
+    public static final String NOT_BE_NULL_OR_EMPTY = "Not be null, empty or blank";
     public static final String NOT_BE_NULL = "Not be null";
     public static final String MINIMO_1_MAXIMO_2 = "Minimum 1 character and maximum 2 characters allowed";
     public static final String MINIMO_2_MAXIMO_9 = "Minimum 5 character and maximum 9 characters allowed";

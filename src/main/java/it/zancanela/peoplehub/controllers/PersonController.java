@@ -3,6 +3,7 @@ package it.zancanela.peoplehub.controllers;
 import it.zancanela.peoplehub.controllers.docs.PersonControllerDocs;
 import it.zancanela.peoplehub.dtos.requests.PersonNameRequestDto;
 import it.zancanela.peoplehub.dtos.requests.PersonRequestDto;
+import it.zancanela.peoplehub.dtos.requests.PersonRequestListDto;
 import it.zancanela.peoplehub.dtos.responses.PersonResponseDto;
 import it.zancanela.peoplehub.services.PersonService;
 import jakarta.validation.Valid;
@@ -49,12 +50,12 @@ public class PersonController implements PersonControllerDocs {
 
     @PostMapping("/batch")
     public ResponseEntity<List<PersonResponseDto>> createBatch(
-            @RequestBody @Valid List<PersonRequestDto> dtos,
+            @RequestBody @Valid PersonRequestListDto peopleDto,
             BindingResult bindingResult) {
 
         verifyBindingResult(bindingResult);
 
-        List<PersonResponseDto> savedPeople = personService.save(dtos.stream().map(PersonRequestDto::toEntity).toList())
+        List<PersonResponseDto> savedPeople = personService.save(PersonRequestListDto.toEntity(peopleDto))
                 .stream().map(PersonResponseDto::toDto).toList();
 
         return new ResponseEntity<>(savedPeople, HttpStatus.CREATED);
@@ -64,8 +65,8 @@ public class PersonController implements PersonControllerDocs {
     public ResponseEntity<Page<PersonResponseDto>> findAll(
             @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        return ResponseEntity.ok().body(
-                PersonResponseDto.toDto(personService.findAll(pageable)));
+        return ResponseEntity
+                .ok(PersonResponseDto.toDto(personService.findAll(pageable)));
     }
 
     @GetMapping("/find-by-name")

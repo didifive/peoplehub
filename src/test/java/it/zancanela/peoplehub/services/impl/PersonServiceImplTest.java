@@ -17,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @DisplayName("Person Service Tests")
 @ActiveProfiles("test")
 class PersonServiceImplTest extends PersonServiceTest {

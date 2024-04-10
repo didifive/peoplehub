@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class BindingResultUtilsTest {
 
     @Test
-    void throwExceptionWhenInstance() throws Exception {
+    void throwExceptionWhenInstance() {
         assertThrows(IllegalStateException.class,
                 () -> Whitebox.invokeConstructor(BindingResultUtils.class));
     }

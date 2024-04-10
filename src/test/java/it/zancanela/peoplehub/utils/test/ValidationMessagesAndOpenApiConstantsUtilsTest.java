@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ValidationMessagesAndOpenApiConstantsUtilsTest {
 
     @Test
-    void throwExceptionWhenInstance() throws Exception {
+    void throwExceptionWhenInstance() {
         assertThrows(IllegalStateException.class,
                 () -> Whitebox.invokeConstructor(ValidationMessagesAndOpenApiConstantsUtils.class));
     }

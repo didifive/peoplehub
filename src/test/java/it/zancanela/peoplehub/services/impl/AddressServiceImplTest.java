@@ -1,21 +1,15 @@
 package it.zancanela.peoplehub.services.impl;
 
 import it.zancanela.peoplehub.repositories.AddressRepository;
-import it.zancanela.peoplehub.repositories.PersonRepository;
 import it.zancanela.peoplehub.services.AddressService;
 import it.zancanela.peoplehub.services.AddressServiceTest;
 import it.zancanela.peoplehub.services.PersonService;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DisplayName("Address Service Tests")

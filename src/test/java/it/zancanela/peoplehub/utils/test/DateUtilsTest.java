@@ -1,6 +1,5 @@
 package it.zancanela.peoplehub.utils.test;
 
-import it.zancanela.peoplehub.exceptions.BadRequestBodyException;
 import it.zancanela.peoplehub.exceptions.PeopleHubException;
 import it.zancanela.peoplehub.utils.DateUtils;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ class DateUtilsTest {
     }
 
     @Test
-    void throwExceptionWhenInstance() throws Exception {
+    void throwExceptionWhenInstance() {
         assertThrows(IllegalStateException.class,
                 () -> Whitebox.invokeConstructor(DateUtils.class));
     }

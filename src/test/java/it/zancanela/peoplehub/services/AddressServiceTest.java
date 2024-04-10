@@ -5,16 +5,16 @@ import it.zancanela.peoplehub.entities.Person;
 import it.zancanela.peoplehub.enums.AddressType;
 import it.zancanela.peoplehub.exceptions.DataIntegrityViolationException;
 import it.zancanela.peoplehub.exceptions.EntityNotFoundException;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.MultipleFailuresError;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import static it.zancanela.peoplehub.utils.Assertions.assertThrowsExceptionWithCorrectMessage;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,7 +68,7 @@ public abstract class AddressServiceTest {
         address2.setZipCode("25784-489");
         address2.setAddressType(AddressType.COMMERCIAL);
 
-        adresses = new ArrayList<>(Arrays.asList(address,address2));
+        adresses = new ArrayList<>(Arrays.asList(address, address2));
     }
 
     @Test
@@ -141,7 +141,7 @@ public abstract class AddressServiceTest {
     @Test
     @Transactional
     void update() {
-        service().addAddress(person.getId(),address);
+        service().addAddress(person.getId(), address);
         String id = person.getAdresses().getFirst().getId();
 
         Address updateAddress = new Address();
@@ -161,7 +161,7 @@ public abstract class AddressServiceTest {
     @Transactional
     void setMainAddress() {
         String personId = person.getId();
-        service().addAddress(personId,address);
+        service().addAddress(personId, address);
         String addressId = person.getAdresses().getFirst().getId();
 
         service().setMainAddress(addressId);
@@ -173,7 +173,7 @@ public abstract class AddressServiceTest {
     @Transactional
     void setMainAddressWhenPersonHasTwoAddress() {
         String personId = person.getId();
-        service().addAdresses(personId,adresses);
+        service().addAdresses(personId, adresses);
         String addressId = person.getAdresses().getFirst().getId();
 
         service().setMainAddress(addressId);
@@ -187,7 +187,7 @@ public abstract class AddressServiceTest {
     @Transactional
     void setMainAddressThrowsExceptionWhenAddressNoHasLinkedPerson() {
         String personId = person.getId();
-        service().addAdresses(personId,adresses);
+        service().addAdresses(personId, adresses);
         Address addressWithoutPerson = person.getAdresses().getFirst();
         addressWithoutPerson.setPerson(null);
 

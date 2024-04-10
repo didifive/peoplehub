@@ -10,7 +10,7 @@ public class BindingResultUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static synchronized void verify(BindingResult bindingResult) {
+    public static synchronized void verifyBindingResult(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new BadRequestBodyException(
                     bindingResult.getFieldErrors().stream()

@@ -3,7 +3,9 @@ package it.zancanela.peoplehub.dtos.responses;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import it.zancanela.peoplehub.entities.Address;
 import it.zancanela.peoplehub.entities.Person;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,6 +37,10 @@ public record PersonResponseDto(
                 person.getBirthDate(),
                 AddressResponseDto.toDto(person.getAdresses())
         );
+    }
+
+    public static synchronized Page<PersonResponseDto> toDto(Page<Person> people) {
+        return people.map(PersonResponseDto::toDto);
     }
 
 }

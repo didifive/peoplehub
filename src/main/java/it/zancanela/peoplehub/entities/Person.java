@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 @Table(name = "PERSON")
@@ -21,15 +19,6 @@ public class Person extends BasicEntity {
             , cascade = {CascadeType.ALL}
             , orphanRemoval = true)
     private List<Address> adresses;
-
-    public Optional<Address> getMainAddress() {
-        if (Objects.isNull(getAdresses()))
-            return Optional.empty();
-
-        return getAdresses().stream()
-                .filter(Address::isMain)
-                .findFirst();
-    }
 
     public String getName() {
         return name;

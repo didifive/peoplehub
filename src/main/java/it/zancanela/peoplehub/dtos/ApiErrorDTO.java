@@ -1,4 +1,4 @@
-package it.zancanela.peoplehub.dto;
+package it.zancanela.peoplehub.dtos;
 
 import java.io.Serializable;
 import java.time.Instant;

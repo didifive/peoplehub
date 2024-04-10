@@ -1,6 +1,6 @@
 package it.zancanela.peoplehub.exceptions;
 
-import it.zancanela.peoplehub.dto.ApiErrorDTO;
+import it.zancanela.peoplehub.dtos.ApiErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,8 @@ import java.time.Instant;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler{
 
-    @ExceptionHandler( { PersonHubException.class } )
-    public ResponseEntity<ApiErrorDTO> handleLojaException(PersonHubException e, HttpServletRequest request){
+    @ExceptionHandler( { PeopleHubException.class } )
+    public ResponseEntity<ApiErrorDTO> handleLojaException(PeopleHubException e, HttpServletRequest request){
 
         ApiErrorDTO err = new ApiErrorDTO();
         err.setTimestamp(Instant.now());

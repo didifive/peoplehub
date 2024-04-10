@@ -1,6 +1,5 @@
 package it.zancanela.peoplehub.dto;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 

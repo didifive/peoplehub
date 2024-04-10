@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Objects;
 
 import static it.zancanela.peoplehub.utils.DateUtils.DATE_PATTERN;
-import static it.zancanela.peoplehub.utils.DateUtils.stringToLocalDate;
 import static it.zancanela.peoplehub.utils.ValidationMessagesAndOpenApiConstantsUtils.*;
 
-public record ResponsePersonDto(
+public record PersonResponseDto(
         @Schema(example = UUID_ID_EXAMPLE)
         String id,
         @Schema(type = STRING, example = PERSON_NAME_EXAMPLE)
@@ -23,18 +22,18 @@ public record ResponsePersonDto(
         @JsonFormat(pattern = DATE_PATTERN)
         LocalDate birthDate,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
-        List<ResponseAddressDto> adresses
+        List<AddressResponseDto> adresses
 ) {
 
-    public static synchronized ResponsePersonDto toDto(Person person) {
+    public static synchronized PersonResponseDto toDto(Person person) {
         if (Objects.isNull(person.getAdresses()))
             person.setAdresses(new ArrayList<>());
 
-        return new ResponsePersonDto(
+        return new PersonResponseDto(
                 person.getId(),
                 person.getName(),
                 person.getBirthDate(),
-                ResponseAddressDto.toDto(person.getAdresses())
+                AddressResponseDto.toDto(person.getAdresses())
         );
     }
 

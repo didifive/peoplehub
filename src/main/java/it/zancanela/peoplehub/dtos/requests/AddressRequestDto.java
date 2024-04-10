@@ -9,7 +9,7 @@ import jakarta.validation.constraints.*;
 
 import static it.zancanela.peoplehub.utils.ValidationMessagesAndOpenApiConstantsUtils.*;
 
-public record RequestAddressDto(
+public record AddressRequestDto(
         @NotBlank(message = NOT_BE_NULL_EMPTY_OR_BLANK)
         @Schema(example = ADDRESS_PUBLIC_PLACE_EXAMPLE)
         String publicPlace,
@@ -34,7 +34,7 @@ public record RequestAddressDto(
         AddressType addressType
 ) {
 
-    public static synchronized Address toEntity(RequestAddressDto dto) {
+    public static synchronized Address toEntity(AddressRequestDto dto) {
         Address address = new Address();
         address.setPublicPlace(dto.publicPlace());
         address.setNumber(dto.number());

@@ -12,7 +12,7 @@ import java.util.List;
 
 import static it.zancanela.peoplehub.utils.ValidationMessagesAndOpenApiConstantsUtils.*;
 
-public record ResponseAddressDto(
+public record AddressResponseDto(
         @Schema(example = UUID_ID_EXAMPLE)
         String id,
         @Schema(example = ADDRESS_PUBLIC_PLACE_EXAMPLE)
@@ -35,8 +35,8 @@ public record ResponseAddressDto(
         boolean mainAddress
 ) {
 
-    public static synchronized ResponseAddressDto toDto(Address entity) {
-        return new ResponseAddressDto(
+    public static synchronized AddressResponseDto toDto(Address entity) {
+        return new AddressResponseDto(
                 entity.getId(),
                 entity.getPublicPlace(),
                 entity.getNumber(),
@@ -48,8 +48,8 @@ public record ResponseAddressDto(
         );
     }
 
-    public static synchronized List<ResponseAddressDto> toDto(List<Address> adresses) {
-        return adresses.stream().map(ResponseAddressDto::toDto).toList();
+    public static synchronized List<AddressResponseDto> toDto(List<Address> adresses) {
+        return adresses.stream().map(AddressResponseDto::toDto).toList();
     }
 
 }

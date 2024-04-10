@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import static it.zancanela.peoplehub.utils.DateUtils.stringToLocalDate;
 import static it.zancanela.peoplehub.utils.ValidationMessagesAndOpenApiConstantsUtils.*;
 
-public record RequestPersonDto(
+public record PersonRequestDto(
         @NotBlank(message = NOT_BE_NULL_EMPTY_OR_BLANK)
         @Schema(type = STRING, example = PERSON_NAME_EXAMPLE)
         String name,
@@ -16,7 +16,7 @@ public record RequestPersonDto(
         String birthDate
 ) {
 
-    public static synchronized Person toEntity(RequestPersonDto dto) {
+    public static synchronized Person toEntity(PersonRequestDto dto) {
         Person person = new Person();
         person.setName(dto.name());
         person.setBirthDate(stringToLocalDate(dto.birthDate));

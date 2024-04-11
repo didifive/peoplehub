@@ -93,7 +93,7 @@ classDiagram
 ## 📷 Prints do Projeto
 
 Banner do Spring personalizado  
-![Spring Banner](docs/jacoco100.PNG?raw=true "Spring Banner")  
+![Spring Banner](docs/banner.PNG?raw=true "Spring Banner")  
 
 **Coverage com 100%** - relatório gerado pelo plugin do Jacoco  
 ![Jacoco Report](docs/jacoco100.PNG?raw=true "Jacoco Report")  
